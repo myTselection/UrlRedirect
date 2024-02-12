@@ -1,3 +1,10 @@
-/__pycache__
+# Ignore all __pycache__ folders
+__pycache__/
+
+# Ignore __pycache__ folders at any level of the directory structure
+/**/__pycache__/
+
 /build
 /dist
+redirect.spec
+/redirect.spec

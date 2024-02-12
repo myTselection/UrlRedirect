@@ -1,6 +1,7 @@
 import requests
 import logging
 import sys
+import argparse
 # from gooey import Gooey, GooeyParser
 # pip install gooey
 
@@ -42,78 +43,72 @@ def download_file(url, filename):
       print(f"- {redirect}")
 
 
+try:
+    import gooey
+except ImportError:
+    gooey = None
 
-def main():    
-    print(f"main sys.argv: {sys.argv}, len: {len(sys.argv)}")
-    # if len(sys.argv) > 1:
-    import argparse
-    parser = argparse.ArgumentParser(description="Download content from a URL")
-    parser.add_argument("-u", "--url", type=str, help="URL to download from")
-    parser.add_argument("-f", "--filename", type=str, help="Filename to save as")
+
+def flex_add_argument(f):
+    '''Make the add_argument accept (and ignore) the widget option.'''
+
+    def f_decorated(*args, **kwargs):
+        kwargs.pop('widget', None)
+        return f(*args, **kwargs)
+
+    return f_decorated
+
+
+# Monkey-patching a private class…
+argparse._ActionsContainer.add_argument = flex_add_argument(argparse.ArgumentParser.add_argument)
+
+# Do not run GUI if it is not available or if command-line arguments are given.
+if gooey is None or len(sys.argv) > 1:
+    ArgumentParser = argparse.ArgumentParser
+
+    def gui_decorator(f):
+        return f
+else:
+    ArgumentParser = gooey.GooeyParser
+    gui_decorator = gooey.Gooey(
+        program_name='Redirect',
+        # navigation='TABBED',
+        suppress_gooey_flag=True,
+    )
+
+
+@gui_decorator
+def main():
+    _LOGGER.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+
+    form = logging.Formatter('%(asctime)s %(message)s',
+                            datefmt='%m/%d/%Y %I:%M:%S')
+
+    ch.setFormatter(form)
+    _LOGGER.addHandler(ch)
+    parser = ArgumentParser(description='''
+Download file and see all redirects used.
+If no command line arguments are provided, the GUI will be shown to enter the URL and filename.
+CLI only requires the URL and filename.
+''')
+    
+
+    parser.add_argument("url", type=str, help="URL of the file to download")
+    parser.add_argument("filename", type=str, help="Name of the file to save", widget="FileSaver")
+    parser.add_argument("--loglevel", type=str, choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO", widget="Dropdown", help="Logging level")
+    # parser.add_argument("allow_redirect", type=bool, help="Allow redirects", widget='BlockCheckbox')
+    args = parser.parse_args()
+
+    _LOGGER.setLevel(args.loglevel)
     args = parser.parse_args()
     if args.url and args.filename:
         download_file(args.url, args.filename)
     else:
         print("Both URL and filename are required.")
-    # else:
-    #     parser = GooeyParser(description="Download content from a URL")
-    #     parser.add_argument("-u", "--url", type=str, help="URL to download from")
-    #     parser.add_argument("-f", "--filename", type=str, help="Filename to save as")
-    #     args = parser.parse_args()
-    #     if args.url and args.filename:
-    #         download_file(args.url, args.filename)
-    #     else:
-    #         print("Both URL and filename are required.")
-            
-
-#     parser = None
-#     args = None
-#     # Check if running from CLI or Gooey
-#     if len(sys.argv) > 1:
-#       # Process command-line arguments
-#       parser = argparse.ArgumentParser(description="File operation script")
-#       parser.add_argument("url", type=str, help="URL of the file to download")
-#       parser.add_argument("filename", type=str, help="Name of the file to save")
-#       parser.add_argument("--loglevel", type=str, choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO", widget="Dropdown", help="Logging level")
-#       args = parser.parse_args()
-#     else:
-#       parser = GooeyParser(
-#           description='''
-# Download a file from URL and show redirects
-# ''')
-      
-#       parser.add_argument("url", type=str, help="URL of the file to download")
-#       parser.add_argument("filename", type=str, help="Name of the file to save", widget="FileSaver")
-#       parser.add_argument("--loglevel", type=str, choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO", widget="Dropdown", help="Logging level")
-#       # parser.add_argument("allow_redirect", type=bool, help="Allow redirects", widget='BlockCheckbox')
-#       args = parser.parse_args()
-
-#     _LOGGER.setLevel(args.loglevel)
-
-#     ch = logging.StreamHandler()
-#     ch.setLevel(args.loglevel)
-
-#     form = logging.Formatter('%(asctime)s %(message)s',
-#                              datefmt='%m/%d/%Y %I:%M:%S')
-
-#     ch.setFormatter(form)
-#     _LOGGER.addHandler(ch)
-
-#     download_file(args.url, args.filename)
-
-#     _LOGGER.debug('done')
-#     print("done")
 
 if __name__ == '__main__':
     main()
-  # _LOGGER.setLevel(logging.DEBUG)
-  # ch = logging.StreamHandler()
-  # ch.setLevel(logging.DEBUG)
-
-  # form = logging.Formatter('%(asctime)s %(message)s',
-  #                         datefmt='%m/%d/%Y %I:%M:%S')
-
-  # ch.setFormatter(form)
-  # _LOGGER.addHandler(ch)
   # download_file("https://updates.jenkins.io/download/plugins/pipeline-model-definition/2.2150.v4cfd8916915c/pipeline-model-definition.hpi", "test.txt")
 
