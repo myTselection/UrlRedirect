@@ -31,7 +31,7 @@ VSVersionInfo(
       StringTable(
         u'040904B0',
         [StringStruct(u'CompanyName', u'GitHub'),
-        StringStruct(u'FileDescription', u'Download a file from URL.'),
+        StringStruct(u'FileDescription', u'Download a file and see all redirects used.'),
         StringStruct(u'FileVersion', u'1.0.0.0'),
         StringStruct(u'InternalName', u'GitHub'),
         StringStruct(u'LegalCopyright', u'© myTselection. All rights reserved.'),
