@@ -1,7 +1,7 @@
 # Redirect
 Download a file and see all redirects used. This can be useful if some firewall whitelisting is required and all url's in the download will need to be whitelisted.
 
-All redirections used during the download will be appended to file `redirect.txt`.
+All redirections used during the download will be appended to file `redirects.txt`.
 
 ## Usage
 
