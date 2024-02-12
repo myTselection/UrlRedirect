@@ -26,21 +26,30 @@ def download_file(url, filename):
         _LOGGER.debug(f"Downloaded file {filename} successfully!")
         print(f"Downloaded file {filename} successfully!")
         break
-      else:
+      elif response.status_code == 302:
         # Log redirect
         _LOGGER.debug(f"response: {response.status_code}, url: {response.next.url}")
         redirects.append(f"{url} -> {response.next.url}")
         url = response.next.url
+      else:
+        _LOGGER.error(f"Error downloading file: {e}")
     except Exception as e:
       _LOGGER.error(f"Error downloading file: {e}")
       break
 
   if redirects:
-    _LOGGER.debug(f"Redirects occurred:")
-    print(f"Redirects occurred:")
-    for redirect in redirects:
-      _LOGGER.debug(f"Redirect: {redirect}")
-      print(f"- {redirect}")
+    # Open a file in append mode
+    with open('redirects.txt', 'a') as f:
+      # Write text to the file
+      f.write("Redirects occurred:\n")
+      _LOGGER.debug(f"Redirects occurred:")
+      print(f"Redirects occurred:")
+      for redirect in redirects:
+        f.write(f"Redirect: {redirect}\n")
+        _LOGGER.debug(f"Redirect: {redirect}")
+        print(f"- {redirect}")
+    
+    print(f"Redirect info added in 'redirects.txt'.")
 
 
 try:
