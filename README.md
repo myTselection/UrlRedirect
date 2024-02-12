@@ -3,19 +3,11 @@ Download a file and see all redirects used.
 
 If a file is to be downloaded, detect the redirects applied.
 
-## Usage
-```
-python3 redirect.py <url> <download_file_name> <allow_redirects>
-```
+## GUI
 
-e.g.
+![GUI](https://github.com/myTselection/UrlRedirect/assets/587940/bc109f20-5184-42c9-b529-424e4b7adede)
 
-```
-python3 redirect.py "https://updates.jenkins.io/download/plugins/pipeline-model-definition/2.2150.v4cfd8916915c/pipeline-model-definition.hpi" "pipeline-model-definition.hpi"
-```
 
 
 ## Installation
-```
-pip install redirect
-```
+Download latest [release](https://github.com/myTselection/UrlRedirect/releases) zip, which contains redirect.exe.
