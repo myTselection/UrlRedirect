@@ -1,6 +1,6 @@
 
 NAME="Redirect"
-VERSION= "1.0.0"
+VERSION= "1.0.1"
 AUTHOR="myTselection"
 AUTHOR_EMAIL="myTselection@gmail.com"
 URL="https://github.com/myTselection/UrlRedirect"

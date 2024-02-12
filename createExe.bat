@@ -17,7 +17,9 @@ REM Get the version number from the const.py file
 setlocal
 for /f "tokens=2 delims== " %%G in ('findstr "VERSION=" const.py') do set VERSION=%%~G
 @REM echo %VERSION%
-pyinstaller --exclude=config.ini --version-file=versionfile.txt  --icon=redirect.ico --windowed --onefile redirect\redirect.py
+pyinstaller --exclude=config.ini --version-file=versionfile.txt  --icon=redirect.ico --windowed --onefile redirect\redirect.py 
+@REM pyinstaller --onefile --noconfirm --clean --exclude=config.ini --exclude-module PyInstaller.main --exclude-module PyInstaller.hooks --exclude-module matplotlib.tests --exclude-module scipy.tests --exclude-module numpy.random.tests --exclude-module numpy.linalg.tests --exclude-module numpy.fft.fftpack_lite --version-file=versionfile.txt --icon=redirect.ico --windowed --onefile redirect\redirect.py
+
 
 set OUTPUT_FILE=dist\Redirect_v%VERSION%.zip
 python -c "import zipfile, os; files_to_zip=['dist/redirect.exe', 'README.md', 'LICENSE']; zip_file=zipfile.ZipFile('%OUTPUT_FILE%', 'w'); [zip_file.write(file_to_zip, os.path.basename(file_to_zip)) for file_to_zip in files_to_zip]; zip_file.close()"

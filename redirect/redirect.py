@@ -1,7 +1,7 @@
-import argparse
 import requests
 import logging
-from gooey import Gooey, GooeyParser
+import sys
+# from gooey import Gooey, GooeyParser
 # pip install gooey
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,35 +42,67 @@ def download_file(url, filename):
       print(f"- {redirect}")
 
 
-@Gooey
-def main():
+
+def main():    
+    print(f"main sys.argv: {sys.argv}, len: {len(sys.argv)}")
+    # if len(sys.argv) > 1:
     import argparse
-    parser = GooeyParser(
-    # parser = argparse.ArgumentParser(
-        description='''
-Download a file from URL
-''')
-    parser.add_argument("url", type=str, help="URL of the file to download")
-    parser.add_argument("filename", type=str, help="Name of the file to save", widget="FileSaver")
-    parser.add_argument("--loglevel", type=str, choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO", widget="Dropdown", help="Logging level")
-    # parser.add_argument("allow_redirect", type=bool, help="Allow redirects", widget='BlockCheckbox')
+    parser = argparse.ArgumentParser(description="Download content from a URL")
+    parser.add_argument("-u", "--url", type=str, help="URL to download from")
+    parser.add_argument("-f", "--filename", type=str, help="Filename to save as")
     args = parser.parse_args()
+    if args.url and args.filename:
+        download_file(args.url, args.filename)
+    else:
+        print("Both URL and filename are required.")
+    # else:
+    #     parser = GooeyParser(description="Download content from a URL")
+    #     parser.add_argument("-u", "--url", type=str, help="URL to download from")
+    #     parser.add_argument("-f", "--filename", type=str, help="Filename to save as")
+    #     args = parser.parse_args()
+    #     if args.url and args.filename:
+    #         download_file(args.url, args.filename)
+    #     else:
+    #         print("Both URL and filename are required.")
+            
 
-    _LOGGER.setLevel(args.loglevel)
+#     parser = None
+#     args = None
+#     # Check if running from CLI or Gooey
+#     if len(sys.argv) > 1:
+#       # Process command-line arguments
+#       parser = argparse.ArgumentParser(description="File operation script")
+#       parser.add_argument("url", type=str, help="URL of the file to download")
+#       parser.add_argument("filename", type=str, help="Name of the file to save")
+#       parser.add_argument("--loglevel", type=str, choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO", widget="Dropdown", help="Logging level")
+#       args = parser.parse_args()
+#     else:
+#       parser = GooeyParser(
+#           description='''
+# Download a file from URL and show redirects
+# ''')
+      
+#       parser.add_argument("url", type=str, help="URL of the file to download")
+#       parser.add_argument("filename", type=str, help="Name of the file to save", widget="FileSaver")
+#       parser.add_argument("--loglevel", type=str, choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO", widget="Dropdown", help="Logging level")
+#       # parser.add_argument("allow_redirect", type=bool, help="Allow redirects", widget='BlockCheckbox')
+#       args = parser.parse_args()
 
-    ch = logging.StreamHandler()
-    ch.setLevel(args.loglevel)
+#     _LOGGER.setLevel(args.loglevel)
 
-    form = logging.Formatter('%(asctime)s %(message)s',
-                             datefmt='%m/%d/%Y %I:%M:%S')
+#     ch = logging.StreamHandler()
+#     ch.setLevel(args.loglevel)
 
-    ch.setFormatter(form)
-    _LOGGER.addHandler(ch)
+#     form = logging.Formatter('%(asctime)s %(message)s',
+#                              datefmt='%m/%d/%Y %I:%M:%S')
 
-    download_file(args.url, args.filename)
+#     ch.setFormatter(form)
+#     _LOGGER.addHandler(ch)
 
-    _LOGGER.debug('done')
-    print("done")
+#     download_file(args.url, args.filename)
+
+#     _LOGGER.debug('done')
+#     print("done")
 
 if __name__ == '__main__':
     main()
